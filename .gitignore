@@ -1,0 +1,15 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+
+# Secrets
+.env
+client_secrets.json  # If you use a Gmail API secrets file
+
+# IDE/editor files (optional)
+.vscode/
+.idea/
+*.log
