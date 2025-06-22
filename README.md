@@ -1,3 +1,3 @@
 ***
-![Banner](images/PhishiWashi%20Banner.png)
+![Banner](images/banner.jpeg)
 ***
