@@ -13,3 +13,5 @@ client_secrets.json  # If you use a Gmail API secrets file
 .vscode/
 .idea/
 *.log
+
+phishi_secret/
