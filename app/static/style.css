@@ -1,0 +1,17 @@
+/* style.css */
+body {
+  background-color: #4068a5; /* your custom background */
+}
+
+/* More specific selector and !important overrides */
+.btn.btn-custom {
+  background-color: #faf6f3 !important;
+  color: #3e70bb !important;
+  border: 1px solid #fbfeef !important;
+}
+
+.btn.btn-custom:hover,
+.btn.btn-custom:focus {
+  background-color: #52b2dc !important;
+  border-color: #fbfeef !important;
+}
