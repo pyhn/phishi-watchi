@@ -15,7 +15,7 @@ class GmailClient:
         self.service = self._authorize()
 
     def _authorize(self):
-        if self.token_path != "":
+        if self.token_path and os.path.exists(self.token_path):
             self.user_creds = Credentials.from_authorized_user_file(self.token_path, self.scopes)
         
         if not self.user_creds or not self.user_creds.valid:
