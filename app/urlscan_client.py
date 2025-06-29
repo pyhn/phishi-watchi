@@ -25,7 +25,7 @@ class UrlScanIOClient:
         return response.json()
     
     def scan_urls(self, urls):
-        wait_time = 10
+        wait_time = 15
         results = []
 
         for url in urls:
@@ -36,7 +36,7 @@ class UrlScanIOClient:
             print(f" → Scan queued (UUID={uuid}), waiting {wait_time}s…")
             time.sleep(wait_time)
 
-            
+
             print(" → Fetching result…")
             result = self.get_result(uuid)
             results.append(result)
