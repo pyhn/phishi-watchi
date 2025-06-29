@@ -7,8 +7,8 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 class GmailClient:
-    def __init__(self, scopes, client_secrets_path, token_path=""):
-        self.scopes = scopes
+    def __init__(self, SCOPES, client_secrets_path, token_path=""):
+        self.scopes = SCOPES
         self.user_creds = None
         self.client_secrets_path = client_secrets_path
         self.token_path = token_path
