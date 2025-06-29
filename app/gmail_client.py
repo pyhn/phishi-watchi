@@ -37,6 +37,19 @@ class GmailClient:
         except HttpError as error:
             print(f"An error occurred: {error}")
             return None
+    
+    # returns list of message ids
+    def fetch_last_n_messages(self, n=5):
+        resp = self.service.users().messages().list(
+            userId="me", maxResults=n
+        ).execute()
+        return [m["id"] for m in resp.get("messages", [])]
+
+    # returns full JSON payload for a given message
+    def get_message(self, msg_id, fmt="full"):
+        return self.service.users().messages().get(
+            userId="me", id=msg_id, format=fmt
+        ).execute()
 
 
 
