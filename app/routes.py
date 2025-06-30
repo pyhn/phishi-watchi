@@ -18,7 +18,7 @@ urlscan_client = UrlScanIOClient()
 def index():
     if request.method == "POST":
         # 1) fetch last 5 message IDs
-        msg_ids = gmail.fetch_last_n_messages(5)
+        msg_ids = gmail.fetch_last_n_messages(1)
 
         # 2) extract all URLs from those messages
         all_urls = []
@@ -29,7 +29,7 @@ def index():
 
         # dedupe
         all_urls = list(dict.fromkeys(all_urls))
-
+        print(f"all_urls: {all_urls}")
         # 3) send each URL to urlscan.io
         scan_results = urlscan_client.scan_urls(all_urls)
 

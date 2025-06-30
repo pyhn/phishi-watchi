@@ -31,15 +31,26 @@ class UrlScanIOClient:
         return data["uuid"]
     
     def get_result(self, uuid):
-        response = requests.get(f"{self.base_url}/result/{uuid}/",
-            headers=self.headers
-        )
+        max_retries = 10
+        retry_delay = 3
 
-        response.raise_for_status()
-        return response.json()
+        url = f"{self.base_url}/result/{uuid}/"
+        for attempt in range(1, max_retries+1):
+            resp = requests.get(url, headers=self.headers)
+            if resp.status_code == 200:
+                return resp.json()
+            elif resp.status_code == 404:
+                print(f"Result not ready yet (attempt {attempt}), retrying in {retry_delay}s…")
+                time.sleep(retry_delay)
+                continue
+            else:
+                # some other error (e.g. 401, 429)—bubble it up
+                resp.raise_for_status()
+
+        raise Exception(f"Result for {uuid} still not found after {max_retries} retries")
     
     def scan_urls(self, urls):
-        wait_time = 15
+        wait_time = 5
         results = []
 
         for url in urls:
