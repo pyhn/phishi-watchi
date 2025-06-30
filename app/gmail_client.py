@@ -39,7 +39,7 @@ class GmailClient:
             return None
     
     # returns list of message ids
-    def fetch_last_n_messages(self, n=5):
+    def fetch_last_n_messages(self, n=2):
         resp = self.service.users().messages().list(
             userId="me", maxResults=n
         ).execute()

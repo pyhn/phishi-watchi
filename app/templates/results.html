@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scan Results</title>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  >
+</head>
+<body class="container mt-5">
+
+  <h1>Phishing Scan Results</h1>
+
+  {% if urls %}
+    <ul class="list-group mb-4">
+      {% for url in urls %}
+        <li class="list-group-item">
+          <strong>{{ url }}</strong>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <h2>urlscan.io Reports</h2>
+    <div class="accordion" id="scansAccordion">
+      {% for scan in scans %}
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="heading{{ loop.index }}">
+            <button class="accordion-button collapsed" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapse{{ loop.index }}"
+                    aria-expanded="false"
+                    aria-controls="collapse{{ loop.index }}">
+              {{ scan['page']['url'] }}
+            </button>
+          </h2>
+          <div id="collapse{{ loop.index }}"
+               class="accordion-collapse collapse"
+               aria-labelledby="heading{{ loop.index }}"
+               data-bs-parent="#scansAccordion">
+            <div class="accordion-body text-start">
+              <p><strong>Verdicts:</strong></p>
+              <ul>
+                {% for key, val in scan['verdicts'].items() %}
+                  <li>{{ key }}: {{ val }}</li>
+                {% endfor %}
+              </ul>
+              <p><a href="https://urlscan.io/result/{{ scan['uuid'] }}/" target="_blank">
+                View full report
+              </a></p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">No URLs scanned.</p>
+  {% endif %}
+
+  <a href="{{ url_for('main.index') }}" class="btn btn-secondary mt-4">
+    ← Back
+  </a>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

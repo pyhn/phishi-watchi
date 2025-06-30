@@ -5,48 +5,40 @@ from flask import (
 from .gmail_client import GmailClient
 from .scanner     import UrlScanner
 from .config      import SCOPES, CLIENT_SECRETS_PATH, TOKEN_PATH
+from .urlscan_client import UrlScanIOClient
 
 bp = Blueprint('main', __name__)
 
-
+gmail = GmailClient(SCOPES, CLIENT_SECRETS_PATH, TOKEN_PATH)
 scanner = UrlScanner()
+urlscan_client = UrlScanIOClient()
 
-# hold your GmailClient instance in memory
-gmail_client = None
 
 @bp.route("/", methods=["GET", "POST"])
 def index():
-    global gmail_client
-
-    # if not yet logged in, send them to /oauth_login
-    if gmail_client is None:
-        return redirect(url_for("main.oauth_login"))
-
     if request.method == "POST":
-        # you now have a logged-in client:
-        email_content = request.form["email"]
-        # TODO: extract URLs from email_content and scan
-        result = "SAFE"
-        return render_template("result.html", result=result)
+        # 1) fetch last 5 message IDs
+        msg_ids = gmail.fetch_last_n_messages(5)
 
-    # initial GET: show the form
+        # 2) extract all URLs from those messages
+        all_urls = []
+        for mid in msg_ids:
+            msg  = gmail.get_message(mid)
+            urls = scanner.extract_urls_from_message(msg)
+            all_urls.extend(urls)
+
+        # dedupe
+        all_urls = list(dict.fromkeys(all_urls))
+
+        # 3) send each URL to urlscan.io
+        scan_results = urlscan_client.scan_urls(all_urls)
+
+        # pass the raw scan JSONs (or selected fields) to the template
+        return render_template("results.html",
+                               urls=all_urls,
+                               scans=scan_results)
+
+    # GET → show index.html
     return render_template("index.html")
 
 
-@bp.route("/oauth_login")
-def oauth_login():
-    global gmail_client
-
-    try:
-        # this will run the browser-based flow the first time:
-        gmail_client = GmailClient(
-            SCOPES,
-            client_secrets_path=CLIENT_SECRETS_PATH,
-            token_path=TOKEN_PATH
-        )
-        flash("Successfully authenticated with Gmail!", "success")
-    except Exception as e:
-        flash(f"OAuth flow failed: {e}", "danger")
-
-    # whether success or failure, go back to index
-    return redirect(url_for("main.index"))

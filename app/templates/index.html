@@ -18,13 +18,12 @@
             >
     </div>
 
-    <!-- Google OAuth Login Button -->
-    <div class="mb-4">
-        <a href="{{ url_for('main.oauth_login') }}"
-            class="btn btn-custom btn-lg">
-            Log in with Google
-        </a>
-    </div>
+    <!-- Phishing Scan Button -->
+    <form method="post">
+      <button type="submit" class="btn btn-custom btn-lg">
+        Scan for phishing links
+      </button>
+    </form>
 
 </body>
 </html>
